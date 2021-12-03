@@ -6,34 +6,18 @@ import kotlin.math.pow
 fun main() {
     val values = readFile("day_3.txt")
 
-    values.forEach {
-        val value = it.toDecimal()
-        val bits = it.toBitsList()
-
-        println("binary: $it, bits: $bits, decimal: $value")
-    }
-
-    println("====")
-
-    val listOfBits = mutableListOf<List<Int>>()
-
-    values.forEach {
-        listOfBits.add(it.toBitsList())
-    }
+    val listOfBits = values.map { it.toBitsList() }
 
     val mostCommonBits = mostCommonBits(listOfBits)
     println(mostCommonBits)
 
     val gammaRate = mostCommonBits.bitListToNumber() // 22
-
     println(gammaRate)
 
     val epsilonBits = mostCommonBits.map { bit -> 1 - bit }
-
     println(epsilonBits)
 
     val epsilonRate = epsilonBits.bitListToNumber()
-
     println(epsilonRate)
 
     val powerConsumption = gammaRate * epsilonRate
