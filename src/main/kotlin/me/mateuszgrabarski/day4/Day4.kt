@@ -8,8 +8,17 @@ fun main() {
     val randomValues = inputValues[0].split(",").map { it.toInt() }
     println("random values: $randomValues")
 
-    val boards = loadBoards(inputValues.subList(2, inputValues.size))
+    val boards = loadBoards(inputValues.subList(2, inputValues.size)).toMutableList()
 
+    part1(randomValues, boards)
+    part2(boards, randomValues)
+}
+
+private fun part1(
+    randomValues: List<Int>,
+    boards: List<BingoBoard>
+) {
+    println("Part 1")
     randomValues.forEach { randomNumber ->
         boards.forEach {
             val winner = it.markNumber(randomNumber)
@@ -23,16 +32,37 @@ fun main() {
     }
 }
 
+private fun part2(
+    boards: MutableList<BingoBoard>,
+    randomValues: List<Int>
+) {
+    println("Part 2")
+    var index = -1
+    while (boards.size > 1) {
+        index++
+        boards.forEach { it.markNumber(randomValues[index]) }
+        boards.removeIf { it.isWinner() }
+    }
+
+    val lastWinBoard = boards.first()
+    println(lastWinBoard)
+    while (!lastWinBoard.isWinner()) {
+        index++
+        lastWinBoard.markNumber(randomValues[index])
+    }
+
+    println(lastWinBoard.score(randomValues[index]))
+}
+
 fun loadBoards(inputs: List<String>): List<BingoBoard> {
     val boards = mutableListOf<BingoBoard>()
     var currentBoard = mutableListOf<Int>()
     inputs.forEach { row ->
-        println(row)
         if (row.isEmpty()) {
             boards.add(BingoBoard(currentBoard))
             currentBoard = mutableListOf()
         } else {
-            val rowValues = row.trim().split(Regex("\\s+")).map { it.toInt() }
+            val rowValues = row.trim().split("\\s+".toRegex()).map { it.toInt() }
             currentBoard.addAll(rowValues)
         }
     }
@@ -47,6 +77,8 @@ data class BingoBoard(
     private val SIZE = 5
 
     private val marks: BooleanArray = BooleanArray(values.size)
+
+    private var winner = false
 
     fun score(winNumber: Int): Int {
         val filledMap = mappedCells()
@@ -68,8 +100,11 @@ data class BingoBoard(
         if (index >= 0) {
             marks[index] = true
         }
-        return checkIsWinner()
+        winner = checkIsWinner()
+        return winner
     }
+
+    fun isWinner() = winner
 
     private fun checkIsWinner(): Boolean {
         val filledMap = mappedCells()
