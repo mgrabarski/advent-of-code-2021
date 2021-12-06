@@ -9,6 +9,29 @@ fun main() {
     part1(inputValues)
 
     println("Part 2")
+    part2(inputValues)
+}
+
+private fun part1(values: List<String>) {
+    val listOfBits = values.map { it.toBitsList() }
+
+    val mostCommonBits = mostCommonBits(listOfBits)
+    println(mostCommonBits)
+
+    val gammaRate = mostCommonBits.bitListToNumber()
+    println(gammaRate)
+
+    val epsilonBits = mostCommonBits.map { bit -> 1 - bit }
+    println(epsilonBits)
+
+    val epsilonRate = epsilonBits.bitListToNumber()
+    println(epsilonRate)
+
+    val powerConsumption = gammaRate * epsilonRate
+    println(powerConsumption)
+}
+
+private fun part2(inputValues: List<String>) {
     var oxygenList = inputValues.map { it.toBitsList() }
     var oxygenIdx = 0
     while (oxygenList.size > 1) {
@@ -29,25 +52,6 @@ fun main() {
 
     val lifeSupportRating = oxygenList.first().bitListToNumber() * scrubberList.first().bitListToNumber()
     println(lifeSupportRating)
-}
-
-private fun part1(values: List<String>) {
-    val listOfBits = values.map { it.toBitsList() }
-
-    val mostCommonBits = mostCommonBits(listOfBits)
-    println(mostCommonBits)
-
-    val gammaRate = mostCommonBits.bitListToNumber()
-    println(gammaRate)
-
-    val epsilonBits = mostCommonBits.map { bit -> 1 - bit }
-    println(epsilonBits)
-
-    val epsilonRate = epsilonBits.bitListToNumber()
-    println(epsilonRate)
-
-    val powerConsumption = gammaRate * epsilonRate
-    println(powerConsumption)
 }
 
 fun String.toBitsList(): List<Int> = toList().map { it.toString().toInt() }
