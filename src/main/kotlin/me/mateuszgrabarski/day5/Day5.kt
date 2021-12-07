@@ -12,7 +12,7 @@ fun main() {
         val points = line.split(" -> ")
         val (x1, y1) = points[0].split(",").map { it.toInt() }
         val (x2, y2) = points[1].split(",").map { it.toInt() }
-        lines.add(Line(from = Point(x1, y1), to = Point(x2, y2)))
+        lines.add(Line(from = Point(x1, y1), to = Point(x2, y2), true))
     }
 
     val part1 = getOverlappingLines(lines)
@@ -25,6 +25,8 @@ private fun getOverlappingLines(lines: List<Line>): Int {
     lines.forEach { line ->
         line.draw(allPoints)
     }
+
+//    Line(Point(1, 1), Point(3, 3), true).draw(allPoints)
 
 //    printAllPoints(allPoints)
 
@@ -47,7 +49,8 @@ data class Point(
 
 data class Line(
     val from: Point,
-    val to: Point
+    val to: Point,
+    val diagonal: Boolean = false
 ) {
 
     fun draw(map: List<MutableList<Int>>) {
@@ -59,8 +62,11 @@ data class Line(
             val x = from.x + i * dx.sign
             val y = from.y + i * dy.sign
             print("(x:$x,y:$y),")
-            if (dx == 0 || dy == 0)
+            if (diagonal)
+                map[x][y]++
+            else if (dx == 0 || dy == 0) {
                 map[y][x]++
+            }
         }
         println()
     }
