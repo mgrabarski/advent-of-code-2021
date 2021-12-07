@@ -7,39 +7,30 @@ import kotlin.math.sign
 fun main() {
     val inputValues = readFile("day_5.txt")
 
+    println("Part 1: ${getOverlappingLines(loadLines(inputValues, false))}")
+    println("Part 2: ${getOverlappingLines(loadLines(inputValues, true))}")
+}
+
+private fun loadLines(
+    inputValues: List<String>,
+    diagonal: Boolean
+): MutableList<Line> {
     val lines = mutableListOf<Line>()
     inputValues.forEach { line ->
         val points = line.split(" -> ")
         val (x1, y1) = points[0].split(",").map { it.toInt() }
         val (x2, y2) = points[1].split(",").map { it.toInt() }
-        lines.add(Line(from = Point(x1, y1), to = Point(x2, y2), true))
+        lines.add(Line(from = Point(x1, y1), to = Point(x2, y2), diagonal))
     }
-
-    val part1 = getOverlappingLines(lines)
-    println("\n$part1")
+    return lines
 }
 
 private fun getOverlappingLines(lines: List<Line>): Int {
     val allPoints = List(1000) { IntArray(1000).toMutableList() }
-
     lines.forEach { line ->
         line.draw(allPoints)
     }
-
-//    Line(Point(1, 1), Point(3, 3), true).draw(allPoints)
-
-//    printAllPoints(allPoints)
-
     return allPoints.sumOf { it.count { i -> i > 1 } }
-}
-
-private fun printAllPoints(map: List<List<Int>>) {
-    map.forEach { line ->
-        println()
-        line.forEach {
-            print(it)
-        }
-    }
 }
 
 data class Point(
@@ -54,20 +45,16 @@ data class Line(
 ) {
 
     fun draw(map: List<MutableList<Int>>) {
-        println("draw: $this")
         val dx = to.x - from.x
         val dy = to.y - from.y
-        println("draw: dx:$dx, dy:$dy")
         for (i in 0..maxOf(abs(dx), abs(dy))) {
             val x = from.x + i * dx.sign
             val y = from.y + i * dy.sign
-            print("(x:$x,y:$y),")
             if (diagonal)
                 map[x][y]++
             else if (dx == 0 || dy == 0) {
                 map[y][x]++
             }
         }
-        println()
     }
 }
