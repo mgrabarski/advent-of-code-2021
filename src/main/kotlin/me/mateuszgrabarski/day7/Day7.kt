@@ -12,7 +12,16 @@ fun main() {
     val median = median(isEven, size, sorted)
 
     val result = sorted.sumOf { position -> (position - median).absoluteValue }
-    println(result)
+    println("Part 1: $result")
+
+    val min = input.minOf { it }
+    val max = input.maxOf { it }
+    val range = min..max
+    val result2 = range.minOf { number ->
+        val cost = input.map { (it - number).absoluteValue }
+        cost.sumOf { (it * (it + 1)) / 2 }
+    }
+    println("Part 2: $result2")
 }
 
 private fun median(isEven: Boolean, size: Int, numbers: List<Int>) =
